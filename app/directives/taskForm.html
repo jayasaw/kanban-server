@@ -1,0 +1,16 @@
+  <div ng-show='ctrl.addTaskItem[$index]'>
+    <div class='form-group'>
+        <input type="text" class='form-control' ng-model='ctrl.model.tasksDescription' placeholder='name' />
+    </div>
+    <div class='form-group'>
+        <input type="date" class='form-control' ng-model='ctrl.model.dueDate' placeholder='Due date' />
+    </div>
+    <div class='form-group'>
+        <select class='form-control' ng-model='ctrl.model.priority' placeholder='priority'>
+                                    <option ng-repeat="item in ctrl.priorities track by $index" value="{{item}}">{{item}}</option>
+                                </select>
+
+    </div>
+    <button type='button' ng-click='ctrl.addTask(list.listsId);ctrl.addTaskItem[$index] = !ctrl.addTaskItem[$index]' class='btn btn-default'>Add</button>
+    <button type='button' class='btn btn-danger' ng-click='ctrl.addTaskItem[$index] = !ctrl.addTaskItem[$index]'>cancel</button>
+</div>

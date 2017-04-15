@@ -1,0 +1,19 @@
+.show-on-hover {
+    display: none;
+    z-index: 1;
+    position: absolute;
+    top: 10%;
+    right: 5%;
+}
+
+.task-body {
+    position: relative;
+}
+
+.task-body:hover {
+    background: #eae4e4;
+}
+
+.task-body:hover .show-on-hover {
+    display: block;
+}

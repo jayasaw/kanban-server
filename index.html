@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="./bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet"></link>
+    <link href="style.css" rel="stylesheet">
+    <style>
+        [ng\:cloak],
+        [ng-cloak],
+        [data-ng-cloak],
+        [x-ng-cloak],
+        .ng-cloak,
+        .x-ng-cloak {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body ng-app="kanban" ng-controller="myCtrl as ctrl" ng-cloak>
+
+    <!-- header starts from here -->
+    <header>
+        <nav class="navbar navbar-default">
+            <div class=" containe-fluid ">
+                <div class='navbar-header'>
+                    <a href="# " class="navbar-brand ">Boards</a>
+                </div>
+                <div class="navbar-form navbar-left ">
+                    <div class='form-group'>
+                        <input type='text' ng-model="ctrl.search" class='form-control' placeholder="search" <span class="glyphicon glyphicon-search pull- right"
+                            aria-hidden="true"></span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <!-- header ends  -->
+    <div class="container ">
+
+        <div class="row">
+            <div class="col-md-3">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div ng-if="ctrl.addListItem">
+                            <form name="myListForm">
+                                <div class="form-group" ng-class='{"has-error" : ctrl.submitted && myListForm.$invalid}'>
+                                    <input type='text' class='form-control' name="listName" required ng-model='ctrl.listName' Placeholder='List Name' />
+                                    <span style="color:#a94442" ng-show="ctrl.submitted && myListForm.$invalid">List Name is required.</span>
+                                </div>
+                                <button type='button' class='btn btn-default' ng-click="ctrl.addList()">Add</button>
+                                <button type='button' class='btn btn-danger' ng-click="ctrl.addListItem = !ctrl.addListItem; ctrl.submitted = false;ctrl.listName = '';">Cancel</button>
+                            </form>
+                        </div>
+                        <a href="" ng-if="!ctrl.addListItem" ng-click="ctrl.addListItem = !ctrl.addListItem" role="button">Add a list...</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!--add list-->
+            <div class="col-md-3" ng-repeat='list in ctrl.listData  track by $index'>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <span>
+                         {{list.listsName}}
+                        </span>
+                        <!--Listdropdown-->
+                        <div class='dropdown pull-right'>
+                            <a href="" class="glyphicon glyphicon-option-horizontal pull-right" id="editButton" aria-hidden="true" data-toggle="dropdown"
+                                aria-expanded="false">
+                            </a>
+                            <ul class="dropdown-menu pull-right" aria-labelledby="editButton">
+                                <li>
+                                    <a href=""> <span class="glyphicon glyphicon-pencil"></span> Edit</a>
+                                </li>
+                                <li>
+                                    <a href="" ng-click='ctrl.editList(list.listsId)'> <span class="glyphicon glyphicon-trash"></span> Remove</a>
+                                </li>
+                                <li>
+                                    <a href="" ng-click='ctrl.sortByDate(list.name)'> <span class="glyphicon glyphicon-export"></span> sort by Due date</a>
+                                </li>
+                                <li>
+                                    <a href=""> <span class="glyphicon glyphicon-export"></span> sort by priority</a>
+                                </li>
+
+                            </ul>
+
+                        </div>
+
+                        <!--end-->
+                    </div>
+
+                    <!--add task -->
+                    <div class="panel-body">
+                        <div class="panel panel-default" ng-repeat='task in ctrl.taskList | filter:{listsId:list.listsId} | filter:{name:ctrl.search}  track by $index'>
+                            <div class="panel-body task-body">
+
+                                <div class="row form-group">
+                                    <div class="col-md-12"><span class="glyphicon glyphicon-tasks"></span> {{task.tasksDescription}}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <span> <span class="glyphicon glyphicon-time"></span> {{task.dueDate | stringDate}}</span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <span>
+                                            <span class="glyphicon glyphicon-flag"></span>                                        {{task.priority}}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!--taskdropdown-->
+                                <div class='dropdown show-on-hover'>
+                                    <a href="" class="glyphicon glyphicon-edit pull-right" id="editButton" aria-hidden="true" data-toggle="dropdown" aria-expanded="false">
+                                    </a>
+                                    <ul class="dropdown-menu pull-right" aria-labelledby="editButton">
+                                        <li>
+                                            <a href="" ng-click='editTask(task, $index)'> <span class="glyphicon glyphicon-pencil"></span> Edit</a>
+                                        </li>
+                                        <li>
+                                            <a href="" ng-click="ctrl.removeTask(task.tasksId)"> <span class="glyphicon glyphicon-trash"></span> Remove</a>
+                                        </li>
+                                        <li ng-repeat="item in ctrl.listData | selectNotFilter:{name:list.listsId} track by $index">
+                                            <a href="" ng-click="ctrl.moveTo( item.listsName, task.index)"> <span class="glyphicon glyphicon-export"></span> Move To {{item.listsName}}</a>
+                                        </li>
+
+                                    </ul>
+                                </div>
+                                <!--end-->
+
+                            </div>
+
+                        </div>
+
+                        <!--form-->
+                        <div ng-show='ctrl.addTaskItem[$index]'>
+                            <form name="myTaskForm">
+                                <div class='form-group' ng-class='{"has-error" : ctrl.taskSubmitted && myTaskForm.$invalid}'>
+                                    <input type="text" class='form-control' name='ctrl.model.tasksDescription' required ng-model='ctrl.model.tasksDescription'
+                                        placeholder='name' />
+                                    <span style="color:#a94442" ng-show="ctrl.taskSubmitted && myTaskForm.$invalid"> Name is required.</span>
+                                </div>
+                                <div class='form-group'>
+                                    <input type="date" class='form-control' ng-model='ctrl.model.dueDate' placeholder='Due date' />
+                                </div>
+                                <div class='form-group'>
+                                    <select class='form-control' ng-model='ctrl.model.priority' placeholder='priority'>
+                                    <option ng-repeat="item in ctrl.priorities track by $index" value="{{item}}">{{item}}</option>
+                                </select>
+
+                                </div>
+                                <button type='button' ng-click='ctrl.addTask(myTaskForm, list.listsId, $index);' class='btn btn-default'>Add</button>
+                                <button type='button' class='btn btn-danger' ng-click='ctrl.cancelTask($index);'>cancel</button>
+                            </form>
+                        </div>
+                        <!--<task-form addListFn="ctrl.addTask(status)" status="list.name" index='$index'></task-form>-->
+                        <a href="" ng-show='!ctrl.addTaskItem[$index]' ng-click='ctrl.addTaskItem[$index] = !ctrl.addTaskItem[$index]' role="button">Add a Task...</a>
+
+                    </div>
+
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+    </div>
+
+
+    <script src="./bower_components/angular/angular.js "></script>
+    <script src="./bower_components/jquery/dist/jquery.js "></script>
+    <script src="./bower_components/bootstrap/dist/js/bootstrap.js "></script>
+    <script src="index.js"></script>
+    <script src="app/filters/selectNotFilter.js"></script>
+    <script src="app/filters/stringDate.js"></script>
+    <script src="app/service.js"></script>
+    <script src="app/directives/taskForm.js"></script>
+    <script src="dataFromServer.js"></script>
+</body>
+
+</html>
