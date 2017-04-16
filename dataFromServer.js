@@ -1,14 +1,25 @@
 kanban.factory('dataFromServer', function ($q, $http) {
     var factory = {}
     var baseUrl = "http://localhost:49554/api/";
-    
+
     factory.getData = function (endpoint) {
         var defered = $q.defer();
         $http({
             url: baseUrl + endpoint,
             method: "GET"
         }).then(function (response) {
-            defered.resolve(response.data)
+            if (endpoint == "tasks" && response.data.length !== 0) {
+              var data =   response.data.map(function (item) {
+                   var newItem = {};
+                    for (var x in item) {                       
+                        if (x !== "listsData") {
+                            newItem[x] = item[x];
+                        }
+                    }
+                    return newItem;
+                })
+            }
+            defered.resolve(data || response.data);
         }, function (error) {
             defered.reject(error)
         })
@@ -16,7 +27,7 @@ kanban.factory('dataFromServer', function ($q, $http) {
     }
 
 
-     factory.postData = function (endpoint, _data) {
+    factory.postData = function (endpoint, _data) {
 
         var defered = $q.defer();
         $http({
@@ -31,10 +42,10 @@ kanban.factory('dataFromServer', function ($q, $http) {
         return defered.promise;
     }
 
-     factory.deletList = function (endpoint, id) {
+    factory.deletList = function (endpoint, id) {
         var defered = $q.defer();
         $http({
-            url: baseUrl + endpoint + '/' +  id,
+            url: baseUrl + endpoint + '/' + id,
             method: "DELETE"
         }).then(function (response) {
             defered.resolve(response.data)
@@ -44,16 +55,16 @@ kanban.factory('dataFromServer', function ($q, $http) {
         return defered.promise;
     }
 
-    factory.moveTask = function (endpoint,_data,listsId) {
+    factory.moveTask = function (endpoint, _data) {
         var defered = $q.defer();
         $http({
-            url: baseUrl + endpoint,
+            url: baseUrl + endpoint + '/' + _data.tasksId,
             method: "PUT",
-             data: JSON.stringify(_data),
+            data: JSON.stringify(_data),
         }).then(function (response) {
             defered.resolve(response.data)
         }, function (error) {
-            defered.reject(error)
+            defered.reject(error.data)
         })
         return defered.promise;
     }
@@ -70,7 +81,7 @@ kanban.factory('dataFromServer', function ($q, $http) {
     //     return defered.promise;
     // }
 
-  
+
 
 
 

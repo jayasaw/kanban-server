@@ -99,13 +99,24 @@ kanban.controller('myCtrl', function (dataService, dataFromServer) {
                    vm.model = {};
     }
 
-    vm.moveTo = function (listsId, index) {
+    vm.moveTo = function (listsId,task) {
 
-        dataFromServer.moveTask("tasks", listsId).then(function (response) {
+var oldListsId =  task.listsId;
 
+task.listsId = listsId;
 
-
-        })
+console.log(listsId);
+console.log(task);
+        dataFromServer.moveTask("tasks", task)
+        .then(function (response) {
+                        
+            console.log(response)
+            console.log("Task Moved successfully");
+        }).catch(
+            function(error){
+                task.listsId = oldListsId;
+            }
+        )
         // dataService.updatetask(_moveToList, index);
         // console.log(_moveToList, index);
     }

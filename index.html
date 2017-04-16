@@ -66,7 +66,9 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <span>
-                         {{list.listsName}}
+                         {{list.listsName}} 
+                        </span><span>
+                           listId: {{list.listsId}}
                         </span>
                         <!--Listdropdown-->
                         <div class='dropdown pull-right'>
@@ -96,9 +98,9 @@
 
                     <!--add task -->
                     <div class="panel-body">
-                        <div class="panel panel-default" ng-repeat='task in ctrl.taskList | filter:{listsId:list.listsId} | filter:{name:ctrl.search}  track by $index'>
+                        <div class="panel panel-default" ng-repeat='task in ctrl.taskList | filter:{listsId : list.listsId}  | filter:{name:ctrl.search}  track by $index'>
                             <div class="panel-body task-body">
-
+task List Id : {{task.listsId}}
                                 <div class="row form-group">
                                     <div class="col-md-12"><span class="glyphicon glyphicon-tasks"></span> {{task.tasksDescription}}</div>
                                 </div>
@@ -108,7 +110,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <span>
-                                            <span class="glyphicon glyphicon-flag"></span>                                        {{task.priority}}
+                                            <span class="glyphicon glyphicon-flag"></span> {{task.priority}}
                                         </span>
                                     </div>
                                 </div>
@@ -124,8 +126,8 @@
                                         <li>
                                             <a href="" ng-click="ctrl.removeTask(task.tasksId)"> <span class="glyphicon glyphicon-trash"></span> Remove</a>
                                         </li>
-                                        <li ng-repeat="item in ctrl.listData | selectNotFilter:{name:list.listsId} track by $index">
-                                            <a href="" ng-click="ctrl.moveTo( item.listsName, task.index)"> <span class="glyphicon glyphicon-export"></span> Move To {{item.listsName}}</a>
+                                        <li ng-repeat="item in ctrl.listData | selectNotFilter:{listsId:list.listsId} track by $index">
+                                            <a href="" ng-click="ctrl.moveTo( item.listsId, task)"> <span class="glyphicon glyphicon-export"></span> Move To {{item.listsName}}</a>
                                         </li>
 
                                     </ul>
